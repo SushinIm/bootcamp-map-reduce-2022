@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libs/hadoop-common-3.2.2.jar"/>
+	<classpathentry kind="lib" path="libs/hadoop-nfs-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-kms-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-app-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-common-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-core-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-hs-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-hs-plugins-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-jobclient-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-nativetask-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-shuffle-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-client-uploader-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/HadoopPrj/lib/hadoop-mapreduce-examples-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/libs/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="C:/libs/mongo-hadoop-core-2.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/libs/mongo-java-driver-3.12.10.jar"/>
+	<classpathentry kind="lib" path="C:/libs/json-simple-1.1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
