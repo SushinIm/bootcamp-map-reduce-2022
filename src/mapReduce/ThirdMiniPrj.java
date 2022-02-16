@@ -1,12 +1,13 @@
 package mapReduce;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -55,32 +56,30 @@ public class ThirdMiniPrj {
 		private Text k = new Text();
 		private Text v = new Text();
 		
-		@SuppressWarnings("unchecked")
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
 			try {
 				String jsonStr = value.toString();
-				
-				JSONParser jsonParser = new JSONParser();
-				JSONObject jsonObj = (JSONObject)((JSONObject) jsonParser.parse(jsonStr)).get("attributes");
-				JSONObject tempObj = null;
-				String tempKey;
+	            JSONParser jsonParser = new JSONParser();
+	            JSONObject jsonObj = (JSONObject) jsonParser.parse(jsonStr);
+	            JSONArray attributes = (JSONArray) jsonObj.get("attributes");
+	            JSONObject tempObj = null;
 				String tempStr;
-				Iterator<String> vals = jsonObj.keySet().iterator();
-				while(vals.hasNext()) {
+				
+				for(Object o : attributes) {
 					String map = "{";
-					tempKey = vals.next();
-					tempObj = (JSONObject)jsonObj.get(tempKey);
-					Iterator<String> is = tempObj.keySet().iterator();
+	            	tempObj = (JSONObject)o;
+	            	
+	            	Iterator<String> is = tempObj.keySet().iterator();
 					while(is.hasNext()) {
 						tempStr = is.next();
-						map += "\"" + tempStr + ":" + tempObj.get(tempStr) + "\", ";
+						map += "\"" + tempStr + "\":\"" + tempObj.get(tempStr) + "\", ";
 					}
-					k.set(tempObj.get("MNTN_CODE").toString());
-					v.set(map.substring(0, map.length()-1) + "}");
+					
+					k.set(tempObj.get("frtrlNm").toString());
+					v.set(map.substring(0, map.length()-2) + "}");
 					context.write(k, v);
-				}
-				
+	            }
 	        } catch (ParseException e) {
 	            e.printStackTrace();
 	        }
@@ -98,7 +97,7 @@ public class ThirdMiniPrj {
 				str += val.toString();
 			}
 			
-			result.set(str);
+			result.set(str.substring(0, str.length()-2));
 			context.write(key, result);
 		}
 	}

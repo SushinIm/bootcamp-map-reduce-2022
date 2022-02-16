@@ -6,7 +6,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.Map;
+import com.mongodb.hadoop.MongoOutputFormat;
+import com.mongodb.hadoop.util.MongoConfigUtil;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -16,6 +17,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class SecondMiniPrj {
@@ -32,14 +34,14 @@ public class SecondMiniPrj {
 	            JSONArray items = (JSONArray) jsonObj.get("item");
 	            JSONObject tempObj = null;
 	            
-	            for(int i=0 ; i<items.size() ; i++){
-	            	tempObj = (JSONObject) items.get(i);
+	            for(Object o : items) {
+	            	tempObj = (JSONObject)o;
 	            	String because = tempObj.get("startyear") + "_" + tempObj.get("startmonth") + "_" + tempObj.get("firecause");
 	            	
 					word.set(because);
 					context.write(word, one);
 	            }
-
+	            
 	        } catch (ParseException e) {
 	            e.printStackTrace();
 	        }
@@ -61,15 +63,30 @@ public class SecondMiniPrj {
 
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
+		
+		//MongoConfigUtil.setOutputURI(conf, "mongodb://127.0.0.1/prj.miniprj");
 		Job job = Job.getInstance(conf, "wordcount");
+		
+		job.setInputFormatClass(TextInputFormat.class);
+		
 		job.setJarByClass(SecondMiniPrj.class);
+		
 		job.setMapperClass(TokenizerMapper.class);
+		
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(IntWritable.class);
+
 		job.setCombinerClass(IntSumReducer.class);
 		job.setReducerClass(IntSumReducer.class);
+        
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
+		
 		FileInputFormat.addInputPath(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		MongoConfigUtil.setOutputURI(conf, args[1]);
+		
+		job.setOutputFormatClass(MongoOutputFormat.class);
+		
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
 }
