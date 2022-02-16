@@ -1,14 +1,12 @@
 package mapReduce;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -33,13 +31,13 @@ public class ThirdMiniPrj {
 		
 		job.setJarByClass(ThirdMiniPrj.class);
 		
-		job.setMapperClass(Map.class);
+		job.setMapperClass(Mapp.class);
 		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
 
-		job.setCombinerClass(Reduce.class);
-		job.setReducerClass(Reduce.class);
+		job.setCombinerClass(Reducee.class);
+		job.setReducerClass(Reducee.class);
         
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
@@ -53,40 +51,43 @@ public class ThirdMiniPrj {
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
 	
-	public static class Map extends Mapper<Object, Text, Text, Text>{
+	public static class Mapp extends Mapper<Object, Text, Text, Text>{
 		private Text k = new Text();
 		private Text v = new Text();
 		
+		@SuppressWarnings("unchecked")
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
 			try {
 				String jsonStr = value.toString();
-				JSONParser jsonParser = new JSONParser();
-				JSONObject jsonObj = (JSONObject) jsonParser.parse(jsonStr);
-				JSONArray features = (JSONArray) jsonObj.get("features");
-				JSONObject tempObj = null;
-				String tempStr = "";
 				
-				for(int i=0 ; i<features.size() ; i++){
+				JSONParser jsonParser = new JSONParser();
+				JSONObject jsonObj = (JSONObject)((JSONObject) jsonParser.parse(jsonStr)).get("attributes");
+				JSONObject tempObj = null;
+				String tempKey;
+				String tempStr;
+				Iterator<String> vals = jsonObj.keySet().iterator();
+				while(vals.hasNext()) {
 					String map = "{";
-					tempObj = (JSONObject) features.get(i);
-					k.set(tempObj.get("MNTN_CODE").toString());
-
+					tempKey = vals.next();
+					tempObj = (JSONObject)jsonObj.get(tempKey);
 					Iterator<String> is = tempObj.keySet().iterator();
 					while(is.hasNext()) {
 						tempStr = is.next();
-						map += "\"" + tempStr + "\":\"" + tempObj.get(tempStr).toString() + "\",";
+						map += "\"" + tempStr + ":" + tempObj.get(tempStr) + "\", ";
 					}
+					k.set(tempObj.get("MNTN_CODE").toString());
 					v.set(map.substring(0, map.length()-1) + "}");
 					context.write(k, v);
 				}
+				
 	        } catch (ParseException e) {
 	            e.printStackTrace();
 	        }
 		}
 	}
 
-	public static class Reduce extends Reducer<Text, Text, Text, Text> {
+	public static class Reducee extends Reducer<Text, Text, Text, Text> {
 		private Text result = new Text();
 
 		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
