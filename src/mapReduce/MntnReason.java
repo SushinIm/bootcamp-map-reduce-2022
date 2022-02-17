@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class ThirdMiniPrj {
+public class MntnReason {
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		
@@ -30,7 +30,7 @@ public class ThirdMiniPrj {
 		
 		job.setInputFormatClass(TextInputFormat.class);
 		
-		job.setJarByClass(ThirdMiniPrj.class);
+		job.setJarByClass(MntnReason.class);
 		
 		job.setMapperClass(Mapp.class);
 		
@@ -76,7 +76,7 @@ public class ThirdMiniPrj {
 						map += "\"" + tempStr + "\":\"" + tempObj.get(tempStr) + "\", ";
 					}
 					
-					k.set(tempObj.get("frtrlNm").toString());
+					k.set(tempObj.get("mntncd").toString());
 					v.set(map.substring(0, map.length()-2) + "}");
 					context.write(k, v);
 	            }
@@ -94,7 +94,7 @@ public class ThirdMiniPrj {
 			String str = "";
 			
 			for (Text val : values) {
-				str += val.toString();
+				str += val.toString() + ", ";
 			}
 			
 			result.set(str.substring(0, str.length()-2));

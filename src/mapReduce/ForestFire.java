@@ -20,7 +20,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class SecondMiniPrj {
+public class ForestFire {
 
 	public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable>{
 		private final static IntWritable one = new IntWritable(1);
@@ -69,7 +69,7 @@ public class SecondMiniPrj {
 		
 		job.setInputFormatClass(TextInputFormat.class);
 		
-		job.setJarByClass(SecondMiniPrj.class);
+		job.setJarByClass(ForestFire.class);
 		
 		job.setMapperClass(TokenizerMapper.class);
 		
